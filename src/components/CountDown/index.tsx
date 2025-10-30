@@ -1,7 +1,9 @@
-import type { HomeProps } from '../../pages/Home';
+import { useTaskContext } from '../../contexts/taskContext/useTaskContext';
 import styles from './styles.module.css';
 
-export function CountDown({ state }: HomeProps) {
+export function CountDown() {
+  const { state } = useTaskContext();
+
   return (
     <div className={styles.container}>{state.formattedSecondsRemaining}</div>
   );
