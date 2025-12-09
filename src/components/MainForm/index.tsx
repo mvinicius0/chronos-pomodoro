@@ -10,6 +10,7 @@ import { getNextCycleType } from '../../utils/getNextCycleType';
 import { TaskActionTypes } from '../../contexts/taskContext/taskAction';
 import { Tips } from '../Tips';
 import { TimerWorkerManager } from '../../workers/timeWorkerManager';
+import { showMessage } from '../../adapters/showMessage';
 
 export function MainForm() {
   const { state, dispatch } = useTaskContext();
@@ -21,13 +22,14 @@ export function MainForm() {
 
   function handleCreateNewTask(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    showMessage.dismiss();
 
     if (taskNameInput.current === null) return;
 
     const taskName = taskNameInput.current.value.trim();
 
     if (!taskName) {
-      alert('Digite o nome da tarefa');
+      showMessage.warn('Digite o nome da tarefa.');
       return;
     }
 
@@ -43,6 +45,8 @@ export function MainForm() {
 
     dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
 
+    showMessage.success('Tarefa iniciada com sucesso!');
+
     const worker = TimerWorkerManager.getInstance();
 
     worker.onmessage(event => {
@@ -51,6 +55,8 @@ export function MainForm() {
   }
 
   function handleInterruptActiveTask() {
+    showMessage.dismiss();
+    showMessage.error('Tarefa interrompida.');
     dispatch({ type: TaskActionTypes.INTERRUPT_TASK });
   }
 
